@@ -1,0 +1,112 @@
+openapi: 3.0.3
+info:
+  title: Places API
+  version: "1.2"
+  description: |
+    Havalimanı / yer verisini yerel places.dat ile tutar; Open-Meteo ve TimeAPI.io
+    kaynaklarından hava ve yerel saati birleştirerek JSON API olarak sunar.
+
+    Canlı: https://places.alikara.com.tr
+    Endpoint: https://places.alikara.com.tr/place.php
+    Geliştirici: Ali Kara — https://alikara.com.tr · bt.alikara@gmail.com
+  contact:
+    name: Ali Kara
+    url: https://alikara.com.tr
+    email: bt.alikara@gmail.com
+  license:
+    name: MIT
+
+servers:
+  - url: https://places.alikara.com.tr
+    description: Production
+
+paths:
+  /place.php:
+    get:
+      summary: Places API
+      operationId: placesQuery
+      parameters:
+        - name: lang
+          in: query
+          schema: { type: string, enum: [tr, en], default: tr }
+        - name: code
+          in: query
+          description: Tek IATA kodu
+          schema: { type: string, example: ist }
+        - name: from
+          in: query
+          schema: { type: string, example: ist }
+        - name: to
+          in: query
+          schema: { type: string, example: cdg }
+        - name: places
+          in: query
+          description: Virgülle IATA listesi
+          schema: { type: string, example: ist,cdg }
+        - name: search
+          in: query
+          schema: { type: string, example: istanbul }
+        - name: browse
+          in: query
+          schema: { type: string, enum: ["1"] }
+        - name: stats
+          in: query
+          schema: { type: string, enum: ["1"] }
+        - name: q
+          in: query
+          schema: { type: string }
+        - name: region
+          in: query
+          schema: { type: string, enum: [TR, EU, AS, AF, NA, SA, OC, AN] }
+        - name: limit
+          in: query
+          schema: { type: integer }
+        - name: list
+          in: query
+          schema: { type: string, enum: ["1"] }
+        - name: health
+          in: query
+          schema: { type: string, enum: ["1"] }
+        - name: lat
+          in: query
+          schema: { type: number }
+        - name: lon
+          in: query
+          schema: { type: number }
+        - name: tz
+          in: query
+          schema: { type: string, example: Europe/Istanbul }
+        - name: name
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Başarılı JSON yanıt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  data: { type: object }
+        "400":
+          description: Geçersiz parametre
+        "404":
+          description: Bilinmeyen IATA
+        "429":
+          description: İstek limiti aşıldı (IP başına 60/dk)
+          headers:
+            Retry-After:
+              schema: { type: integer }
+              description: Saniye cinsinden bekleme
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: false }
+                  code: { type: string, example: RATE_LIMITED }
+                  error: { type: string }
+                  retryAfter: { type: integer }
+        "502":
+          description: Upstream (Open-Meteo / TimeAPI) yanıt vermedi

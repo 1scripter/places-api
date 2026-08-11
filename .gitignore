@@ -1,0 +1,15 @@
+.DS_Store
+.idea/
+.vscode/
+*.pyc
+__pycache__/
+.venv/
+.rate/
+
+# Kaynak / çalışma dosyaları — GitHub'a gitmez (sadece docs)
+place.php
+places.dat
+index.html
+ornek.html
+.htaccess
+leaflet/

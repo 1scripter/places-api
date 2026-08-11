@@ -1,0 +1,1 @@
+{"ok":true,"apiVersion":"1.2","checks":{"places_dat":{"ok":true,"ms":8},"open_meteo":{"ok":true,"ms":342,"http":200},"timeapi_io":{"ok":true,"ms":354,"http":200},"flagcdn":{"ok":true,"ms":321,"http":200}}}
